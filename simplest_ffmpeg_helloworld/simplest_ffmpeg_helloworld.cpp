@@ -1,13 +1,6 @@
 /**
  * 最简单的FFmpeg Helloworld程序
  * Simplest FFmpeg HelloWorld
- *
- * 雷霄骅 Lei Xiaohua
- * leixiaohua1020@126.com
- * 中国传媒大学/数字电视技术
- * Communication University of China / Digital TV Technology
- * http://blog.csdn.net/leixiaohua1020
- *
  * 
  * 本程序是基于FFmpeg函数的最简单的程序。它可以打印出FFmpeg类库的下列信息：
  * Protocol:  FFmpeg类库支持的协议

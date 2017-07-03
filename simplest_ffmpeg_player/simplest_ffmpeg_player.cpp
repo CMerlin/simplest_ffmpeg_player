@@ -2,12 +2,6 @@
  * 最简单的基于FFmpeg的视频播放器 2
  * Simplest FFmpeg Player 2
  *
- * 雷霄骅 Lei Xiaohua
- * leixiaohua1020@126.com
- * 中国传媒大学/数字电视技术
- * Communication University of China / Digital TV Technology
- * http://blog.csdn.net/leixiaohua1020
- *
  * 第2版使用SDL2.0取代了第一版中的SDL1.2
  * Version 2 use SDL 2.0 instead of SDL 1.2 in version 1.
  *

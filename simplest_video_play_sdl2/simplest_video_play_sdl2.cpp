@@ -2,12 +2,6 @@
  * 最简单的SDL2播放视频的例子（SDL2播放RGB/YUV）
  * Simplest Video Play SDL2 (SDL2 play RGB/YUV) 
  *
- * 雷霄骅 Lei Xiaohua
- * leixiaohua1020@126.com
- * 中国传媒大学/数字电视技术
- * Communication University of China / Digital TV Technology
- * http://blog.csdn.net/leixiaohua1020
- *
  * 本程序使用SDL2播放RGB/YUV视频像素数据。SDL实际上是对底层绘图
  * API（Direct3D，OpenGL）的封装，使用起来明显简单于直接调用底层
  * API。
