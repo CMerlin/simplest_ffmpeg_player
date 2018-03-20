@@ -1,11 +1,11 @@
 /**
- * ◊ÓºÚµ•µƒª˘”⁄FFmpegµƒ ”∆µΩ‚¬Î∆˜£®¥øæª∞Ê£©
+ * ÊúÄÁÆÄÂçïÁöÑÂü∫‰∫éFFmpegÁöÑËßÜÈ¢ëËß£Á†ÅÂô®ÔºàÁ∫ØÂáÄÁâàÔºâ
  * Simplest FFmpeg Decoder Pure
  *
- * ±æ≥Ã–Ú µœ÷¡À ”∆µ¬Î¡˜(÷ß≥÷HEVC£¨H.264£¨MPEG2µ»)Ω‚¬ÎŒ™YUV ˝æ›°£
- * À¸ΩˆΩˆ π”√¡Àlibavcodec£®∂¯√ª”– π”√libavformat£©°£
- *  «◊ÓºÚµ•µƒFFmpeg ”∆µΩ‚¬Î∑Ω√ÊµƒΩÃ≥Ã°£
- * Õ®π˝—ßœ∞±æ¿˝◊”ø…“‘¡ÀΩ‚FFmpegµƒΩ‚¬Î¡˜≥Ã°£
+ * Êú¨Á®ãÂ∫èÂÆûÁé∞‰∫ÜËßÜÈ¢ëÁ†ÅÊµÅ(ÊîØÊåÅHEVCÔºåH.264ÔºåMPEG2Á≠â)Ëß£Á†Å‰∏∫YUVÊï∞ÊçÆ„ÄÇ
+ * ÂÆÉ‰ªÖ‰ªÖ‰ΩøÁî®‰∫ÜlibavcodecÔºàËÄåÊ≤°Êúâ‰ΩøÁî®libavformatÔºâ„ÄÇ
+ * ÊòØÊúÄÁÆÄÂçïÁöÑFFmpegËßÜÈ¢ëËß£Á†ÅÊñπÈù¢ÁöÑÊïôÁ®ã„ÄÇ
+ * ÈÄöËøáÂ≠¶‰π†Êú¨‰æãÂ≠êÂèØ‰ª•‰∫ÜËß£FFmpegÁöÑËß£Á†ÅÊµÅÁ®ã„ÄÇ
  * This software is a simplest decoder based on FFmpeg.
  * It decode bitstreams to YUV pixel data.
  * It just use libavcodec (do not contains libavformat).
@@ -42,21 +42,22 @@ extern "C"
 int main(int argc, char* argv[])
 {
 	AVCodec *pCodec;
-    AVCodecContext *pCodecCtx= NULL;
+	AVCodecContext *pCodecCtx= NULL;
 	AVCodecParserContext *pCodecParserCtx=NULL;
 
-    FILE *fp_in;
+	FILE *fp_in;
 	FILE *fp_out;
-    AVFrame	*pFrame;
-	
+	AVFrame	*pFrame;
+
 	const int in_buffer_size=4096;
 	unsigned char in_buffer[in_buffer_size + FF_INPUT_BUFFER_PADDING_SIZE]={0};
 	unsigned char *cur_ptr;
 	int cur_size;
-    AVPacket packet;
+	AVPacket packet;
 	int ret, got_picture;
 
 
+	printf("[%s]:line:%d\n", __func__, __LINE__);
 #if TEST_HEVC
 	enum AVCodecID codec_id=AV_CODEC_ID_HEVC;
 	char filepath_in[]="bigbuckbunny_480x272.hevc";
@@ -73,89 +74,88 @@ int main(int argc, char* argv[])
 
 
 	//av_log_set_level(AV_LOG_DEBUG);
-	
-	avcodec_register_all();
 
-    pCodec = avcodec_find_decoder(codec_id);
-    if (!pCodec) {
-        printf("Codec not found\n");
-        return -1;
-    }
-    pCodecCtx = avcodec_alloc_context3(pCodec);
-    if (!pCodecCtx){
-        printf("Could not allocate video codec context\n");
-        return -1;
-    }
-
-	pCodecParserCtx=av_parser_init(codec_id);
-	if (!pCodecParserCtx){
-		printf("Could not allocate video parser context\n");
+	avcodec_register_all(); /*Ê≥®ÂÜåËß£Á†ÅÂô®*/
+	pCodec = avcodec_find_decoder(codec_id); /*Êü•ÊâæËß£Á†ÅÂô®*/
+	if (!pCodec) {
+		printf("[%s]:Codec not found line:%d\n", __func__, __LINE__);
+		return -1;
+	}
+	pCodecCtx = avcodec_alloc_context3(pCodec); /*ÂàùÂßãÂåñpCodecCtxÁªìÊûÑ‰Ωì*/
+	if (!pCodecCtx){
+		printf("[%s]:Could not allocate video codec context line:%d\n", __func__, __LINE__);
 		return -1;
 	}
 
-    //if(pCodec->capabilities&CODEC_CAP_TRUNCATED)
-    //    pCodecCtx->flags|= CODEC_FLAG_TRUNCATED; 
-    
-    if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
-        printf("Could not open codec\n");
-        return -1;
-    }
+	pCodecParserCtx=av_parser_init(codec_id); /*ÂàùÂßãÂåñAVCodecParserContext*/
+	if (!pCodecParserCtx){
+		printf("[%s]:Could not allocate video parser context line:%d\n", __func__, __LINE__);
+		return -1;
+	}
+
+	//if(pCodec->capabilities&CODEC_CAP_TRUNCATED)
+	//    pCodecCtx->flags|= CODEC_FLAG_TRUNCATED; 
+	/*ÊâìÂºÄËß£Á†ÅÂô®*/
+	if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
+		printf("[%s]:Could not open codec line:%d\n", __func__, __LINE__);
+		return -1;
+	}
 	//Input File
-    fp_in = fopen(filepath_in, "rb");
-    if (!fp_in) {
-        printf("Could not open input stream\n");
-        return -1;
-    }
+	fp_in = fopen(filepath_in, "rb");
+	if (!fp_in) {
+		printf("[%s]:Could not open input stream line:%d\n", __func__, __LINE__);
+		return -1;
+	}
 	//Output File
 	fp_out = fopen(filepath_out, "wb");
 	if (!fp_out) {
-		printf("Could not open output YUV file\n");
+		printf("[%s]:Could not open output YUV file line:%d\n", __func__, __LINE__);
 		return -1;
 	}
 
-    pFrame = av_frame_alloc();
+	pFrame = av_frame_alloc();
 	av_init_packet(&packet);
 
 	while (1) {
 
-        cur_size = fread(in_buffer, 1, in_buffer_size, fp_in);
-        if (cur_size == 0)
-            break;
-        cur_ptr=in_buffer;
+		cur_size = fread(in_buffer, 1, in_buffer_size, fp_in);
+		if (cur_size == 0)
+			break;
+		cur_ptr=in_buffer;
 
-        while (cur_size>0){
-
+		while (cur_size>0){
+			/*‰ªéËæìÂÖ•ÁöÑÊï∞ÊçÆÊµÅ‰∏≠ÂàÜÁ¶ªÂá∫‰∏ÄÂ∏ß‰∏ÄÂ∏ßÁöÑÂéãÁº©ÁºñÁ†ÅÊï∞ÊçÆ*/
 			int len = av_parser_parse2(
-				pCodecParserCtx, pCodecCtx,
-				&packet.data, &packet.size,
-				cur_ptr , cur_size ,
-				AV_NOPTS_VALUE, AV_NOPTS_VALUE, AV_NOPTS_VALUE);
+					pCodecParserCtx, pCodecCtx,
+					&packet.data, &packet.size,
+					cur_ptr , cur_size ,
+					AV_NOPTS_VALUE, AV_NOPTS_VALUE, AV_NOPTS_VALUE);
 
-			cur_ptr += len;
-			cur_size -= len;
+			cur_ptr += len; /*Êõ¥Êñ∞ËæìÂÖ•ÁöÑÊï∞ÊçÆÊµÅÁöÑËµ∑ÂßãÂú∞ÂùÄ*/
+			cur_size -= len; /*ËæìÂÖ•ÁöÑÊï∞ÊçÆÊµÅÁöÑÈïøÂ∫¶*/
 
 			if(packet.size==0)
 				continue;
 
 			//Some Info from AVCodecParserContext
-			printf("[Packet]Size:%6d\t",packet.size);
+			//printf("[%s]:Packet Size:%6d\t", __func__, packet.size);
 			switch(pCodecParserCtx->pict_type){
-				case AV_PICTURE_TYPE_I: printf("Type:I\t");break;
-				case AV_PICTURE_TYPE_P: printf("Type:P\t");break;
-				case AV_PICTURE_TYPE_B: printf("Type:B\t");break;
-				default: printf("Type:Other\t");break;
+			case AV_PICTURE_TYPE_I: printf("Type:I\t");break;
+			case AV_PICTURE_TYPE_P: printf("Type:P\t");break;
+			case AV_PICTURE_TYPE_B: printf("Type:B\t");break;
+			default: printf("Type:Other\t");break;
 			}
-			printf("Number:%4d\n",pCodecParserCtx->output_picture_number);
+			//printf("Number:%4d line:%d\n",pCodecParserCtx->output_picture_number, __LINE__);
 
-			ret = avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, &packet);
+			ret = avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, &packet); /*Ëß£Á†Å‰∏ÄÂ∏ßÊï∞ÊçÆ*/
 			if (ret < 0) {
-				printf("Decode Error.\n");
+				printf("[%s]:Decode Error. line:%d\n", __func__, __LINE__);
 				return ret;
 			}
 			if (got_picture) {
 				if(first_time){
-					printf("\nCodec Full Name:%s\n",pCodecCtx->codec->long_name);
-					printf("width:%d\nheight:%d\n\n",pCodecCtx->width,pCodecCtx->height);
+					printf("\n[%s]:Codec Full Name:%s line:%d\n", __func__, pCodecCtx->codec->long_name, __LINE__);
+					printf("width:%d\nheight:%d\n\n", pCodecCtx->width,pCodecCtx->height);
 					first_time=0;
 				}
 				//Y, U, V
@@ -169,19 +169,20 @@ int main(int argc, char* argv[])
 					fwrite(pFrame->data[2]+pFrame->linesize[2]*i,1,pFrame->width/2,fp_out);
 				}
 
-				printf("Succeed to decode 1 frame!\n");
+				printf("[%s]:Succeed to decode 1 frame! line:%d\n", __func__, __LINE__);
 			}
 		}
 
-    }
+	}
 
 	//Flush Decoder
-    packet.data = NULL;
-    packet.size = 0;
+	packet.data = NULL;
+	packet.size = 0;
 	while(1){
+		printf("[%s]: line:%d\n", __func__, __LINE__);
 		ret = avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, &packet);
 		if (ret < 0) {
-			printf("Decode Error.\n");
+			printf("[%s]:Decode Error. line:%d\n", __func__, __LINE__);
 			return ret;
 		}
 		if (!got_picture){
@@ -198,14 +199,14 @@ int main(int argc, char* argv[])
 				fwrite(pFrame->data[2]+pFrame->linesize[2]*i,1,pFrame->width/2,fp_out);
 			}
 
-			printf("Flush Decoder: Succeed to decode 1 frame!\n");
+			printf("[%s]:Flush Decoder: Succeed to decode 1 frame! line:%d\n", __func__, __LINE__);
 		}
 	}
 
-    fclose(fp_in);
+	fclose(fp_in);
 	fclose(fp_out);
 
-
+	printf("[%s]: line:%d\n", __func__, __LINE__);
 	av_parser_close(pCodecParserCtx);
 
 	av_frame_free(&pFrame);
@@ -214,4 +215,6 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+
+
 

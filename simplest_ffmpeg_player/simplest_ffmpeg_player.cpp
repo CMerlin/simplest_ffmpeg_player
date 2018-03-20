@@ -1,13 +1,17 @@
+/*************************************************************
+ * Fileï¼š
+ * Briefï¼šæ­¤æ–‡å¯¹è±¡
+ ************************************************************/
 /**
- * ×î¼òµ¥µÄ»ùÓÚFFmpegµÄÊÓÆµ²¥·ÅÆ÷ 2
+ * æœ€ç®€å•çš„åŸºäºŽFFmpegçš„è§†é¢‘æ’­æ”¾å™¨ 2
  * Simplest FFmpeg Player 2
  *
- * µÚ2°æÊ¹ÓÃSDL2.0È¡´úÁËµÚÒ»°æÖÐµÄSDL1.2
+ * ç¬¬2ç‰ˆä½¿ç”¨SDL2.0å–ä»£äº†ç¬¬ä¸€ç‰ˆä¸­çš„SDL1.2
  * Version 2 use SDL 2.0 instead of SDL 1.2 in version 1.
  *
- * ±¾³ÌÐòÊµÏÖÁËÊÓÆµÎÄ¼þµÄ½âÂëºÍÏÔÊ¾(Ö§³ÖHEVC£¬H.264£¬MPEG2µÈ)¡£
- * ÊÇ×î¼òµ¥µÄFFmpegÊÓÆµ½âÂë·½ÃæµÄ½Ì³Ì¡£
- * Í¨¹ýÑ§Ï°±¾Àý×Ó¿ÉÒÔÁË½âFFmpegµÄ½âÂëÁ÷³Ì¡£
+ * æœ¬ç¨‹åºå®žçŽ°äº†è§†é¢‘æ–‡ä»¶çš„è§£ç å’Œæ˜¾ç¤º(æ”¯æŒHEVCï¼ŒH.264ï¼ŒMPEG2ç­‰)ã€‚
+ * æ˜¯æœ€ç®€å•çš„FFmpegè§†é¢‘è§£ç æ–¹é¢çš„æ•™ç¨‹ã€‚
+ * é€šè¿‡å­¦ä¹ æœ¬ä¾‹å­å¯ä»¥äº†è§£FFmpegçš„è§£ç æµç¨‹ã€‚
  * This software is a simplest video player based on FFmpeg.
  * Suitable for beginner of FFmpeg.
  *
@@ -50,11 +54,11 @@ extern "C"
 
 int main(int argc, char* argv[])
 {
-	AVFormatContext	*pFormatCtx;
-	int				i, videoindex;
+	AVFormatContext *pFormatCtx;
+	int 			i, videoindex;
 	AVCodecContext	*pCodecCtx;
-	AVCodec			*pCodec;
-	AVFrame	*pFrame,*pFrameYUV;
+	AVCodec 		*pCodec;
+	AVFrame *pFrame,*pFrameYUV;
 	unsigned char *out_buffer;
 	AVPacket *packet;
 	int y_size;
@@ -104,25 +108,25 @@ int main(int argc, char* argv[])
 		printf("Could not open codec.\n");
 		return -1;
 	}
-	
+
 	pFrame=av_frame_alloc();
 	pFrameYUV=av_frame_alloc();
-	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1));
+	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,	pCodecCtx->width, pCodecCtx->height,1));
 	av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize,out_buffer,
-		AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
-	
+			AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
+
 	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
 	//Output Info-----------------------------
 	printf("--------------- File Information ----------------\n");
 	av_dump_format(pFormatCtx,0,filepath,0);
 	printf("-------------------------------------------------\n");
 	img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, 
-		pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL); 
+			pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL); 
 
 #if OUTPUT_YUV420P 
-    fp_yuv=fopen("output.yuv","wb+");  
+	fp_yuv=fopen("output.yuv","wb+");  
 #endif  
-	
+
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {  
 		printf( "Could not initialize SDL - %s\n", SDL_GetError()); 
 		return -1;
@@ -132,8 +136,8 @@ int main(int argc, char* argv[])
 	screen_h = pCodecCtx->height;
 	//SDL 2.0 Support for multiple windows
 	screen = SDL_CreateWindow("Simplest ffmpeg player's Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		screen_w, screen_h,
-		SDL_WINDOW_OPENGL);
+			screen_w, screen_h,
+			SDL_WINDOW_OPENGL);
 
 	if(!screen) {  
 		printf("SDL: could not create window - exiting:%s\n",SDL_GetError());  
@@ -143,7 +147,7 @@ int main(int argc, char* argv[])
 	sdlRenderer = SDL_CreateRenderer(screen, -1, 0);  
 	//IYUV: Y + U + V  (3 planes)
 	//YV12: Y + V + U  (3 planes)
-	sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING,pCodecCtx->width,pCodecCtx->height);  
+	sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING,pCodecCtx->width,pCodecCtx->height);	
 
 	sdlRect.x=0;
 	sdlRect.y=0;
@@ -160,26 +164,26 @@ int main(int argc, char* argv[])
 			}
 			if(got_picture){
 				sws_scale(img_convert_ctx, (const unsigned char* const*)pFrame->data, pFrame->linesize, 0, pCodecCtx->height, 
-					pFrameYUV->data, pFrameYUV->linesize);
-				
+						pFrameYUV->data, pFrameYUV->linesize);
+
 #if OUTPUT_YUV420P
-				y_size=pCodecCtx->width*pCodecCtx->height;  
+				y_size=pCodecCtx->width*pCodecCtx->height;	
 				fwrite(pFrameYUV->data[0],1,y_size,fp_yuv);    //Y 
 				fwrite(pFrameYUV->data[1],1,y_size/4,fp_yuv);  //U
 				fwrite(pFrameYUV->data[2],1,y_size/4,fp_yuv);  //V
 #endif
 				//SDL---------------------------
 #if 0
-				SDL_UpdateTexture( sdlTexture, NULL, pFrameYUV->data[0], pFrameYUV->linesize[0] );  
+				SDL_UpdateTexture( sdlTexture, NULL, pFrameYUV->data[0], pFrameYUV->linesize[0] );	
 #else
 				SDL_UpdateYUVTexture(sdlTexture, &sdlRect,
-				pFrameYUV->data[0], pFrameYUV->linesize[0],
-				pFrameYUV->data[1], pFrameYUV->linesize[1],
-				pFrameYUV->data[2], pFrameYUV->linesize[2]);
+						pFrameYUV->data[0], pFrameYUV->linesize[0],
+						pFrameYUV->data[1], pFrameYUV->linesize[1],
+						pFrameYUV->data[2], pFrameYUV->linesize[2]);
 #endif	
-				
+
 				SDL_RenderClear( sdlRenderer );  
-				SDL_RenderCopy( sdlRenderer, sdlTexture,  NULL, &sdlRect);  
+				SDL_RenderCopy( sdlRenderer, sdlTexture,  NULL, &sdlRect);	
 				SDL_RenderPresent( sdlRenderer );  
 				//SDL End-----------------------
 				//Delay 40ms
@@ -197,17 +201,17 @@ int main(int argc, char* argv[])
 		if (!got_picture)
 			break;
 		sws_scale(img_convert_ctx, (const unsigned char* const*)pFrame->data, pFrame->linesize, 0, pCodecCtx->height, 
-			pFrameYUV->data, pFrameYUV->linesize);
+				pFrameYUV->data, pFrameYUV->linesize);
 #if OUTPUT_YUV420P
-		int y_size=pCodecCtx->width*pCodecCtx->height;  
+		int y_size=pCodecCtx->width*pCodecCtx->height;	
 		fwrite(pFrameYUV->data[0],1,y_size,fp_yuv);    //Y 
 		fwrite(pFrameYUV->data[1],1,y_size/4,fp_yuv);  //U
 		fwrite(pFrameYUV->data[2],1,y_size/4,fp_yuv);  //V
 #endif
 		//SDL---------------------------
-		SDL_UpdateTexture( sdlTexture, &sdlRect, pFrameYUV->data[0], pFrameYUV->linesize[0] );  
+		SDL_UpdateTexture( sdlTexture, &sdlRect, pFrameYUV->data[0], pFrameYUV->linesize[0] );	
 		SDL_RenderClear( sdlRenderer );  
-		SDL_RenderCopy( sdlRenderer, sdlTexture,  NULL, &sdlRect);  
+		SDL_RenderCopy( sdlRenderer, sdlTexture,  NULL, &sdlRect);	
 		SDL_RenderPresent( sdlRenderer );  
 		//SDL End-----------------------
 		//Delay 40ms
@@ -217,7 +221,7 @@ int main(int argc, char* argv[])
 	sws_freeContext(img_convert_ctx);
 
 #if OUTPUT_YUV420P 
-    fclose(fp_yuv);
+	fclose(fp_yuv);
 #endif 
 
 	SDL_Quit();
@@ -229,4 +233,5 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+
 
